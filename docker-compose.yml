@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  ml-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONPATH=/app
+    volumes:
+      - ./models:/app/models  # Mount models directory for persistence
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # Optional: Add a training service that runs periodically
+  ml-trainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python train.py
+    volumes:
+      - ./models:/app/models
+    profiles:
+      - training  # Only run when explicitly requested
+
+networks:
+  default:
+    name: ml-pipeline-network
