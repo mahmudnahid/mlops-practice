@@ -56,9 +56,9 @@ class MLPipeline:
         )
         
         # Second split: separate train and validation from remaining data
-        val_size_adjusted = val_size / (1 - test_size)
+        # val_size_adjusted = val_size / (1 - test_size)
         X_train, X_val, y_train, y_val = train_test_split(
-            X_temp, y_temp, test_size=val_size_adjusted, 
+            X_temp, y_temp, test_size=val_size, 
             random_state=self.random_state, stratify=y_temp
         )
         
