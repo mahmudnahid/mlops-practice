@@ -17,7 +17,7 @@ from train import MLPipeline
 # Import the FastAPI app
 import sys
 sys.path.append('.')
-from main import app, load_model
+from api import app, load_model
 
 class TestMLAPI:
     
