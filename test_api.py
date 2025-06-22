@@ -6,6 +6,7 @@ Tests API endpoints and functionality
 
 import pytest
 import httpx
+from httpx import ASGITransport
 import asyncio
 import json
 import os
@@ -247,7 +248,8 @@ class TestMLAPI:
     @pytest.mark.asyncio
     async def test_async_predictions(self, setup_model):
         """Test async API calls"""
-        async with httpx.AsyncClient(app=app, base_url="http://test") as ac:
+        async with httpx.AsyncClient(
+            transport=ASGITransport(app=app), base_url="http://test") as ac:
             test_features = [0.1, -0.5, 1.2, 0.8, -1.1, 0.3, -0.7, 1.5, 0.2, -0.9]
             
             response = await ac.post(
