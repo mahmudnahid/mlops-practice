@@ -82,9 +82,19 @@ jobs:
     
     - name: Test Docker image
       run: |
-        docker run --rm -d --name ml-test -p 8000:8000 ml-pipeline:latest
-        sleep 30
-        curl -f http://localhost:8000/health || exit 1
+        docker run --rm -d --name ml-test -p 8000:8000 ml-pipeline:latest        
+        echo "Waiting for container to become ready..."
+        for i in {1..10}; do
+          sleep 5
+          if curl -s http://localhost:8000/health; then
+            echo "✅ Container is responding on port 8000"
+            break
+          elif [ $i -eq 10 ]; then
+            echo "❌ Container did not respond on port 8000 after waiting"
+            docker logs test-container
+            exit 1
+          fi
+        done
         docker stop ml-test
 
   integration-test:
